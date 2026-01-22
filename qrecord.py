@@ -25,9 +25,6 @@ def fetch_qualification_record(config):
     options.add_argument("--headless=new")
     web = webdriver.Chrome(options=options)
 
-    # Browse webpage
-    web.get(config["enquiry_qualification_link"])
-
     # Initialise an array to store all failed cases
     failed = []
 
@@ -40,6 +37,9 @@ def fetch_qualification_record(config):
         # Start trial loop
         for trial in range(3):
             try:
+                # Browse webpage
+                web.get(config["enquiry_qualification_link"])
+
                 # Find input field for staff number
                 staff_id_input = WebDriverWait(web, 10).until(
                         EC.presence_of_element_located((
@@ -140,30 +140,17 @@ def fetch_qualification_record(config):
 
                 # Remove previous files
                 try:
-                    for previous_file in glob.glob("reports/" + name + '*'):
+                    for previous_file in glob.glob("reports/Q_" + name + '*'):
                         os.remove(previous_file)
                 except BaseException:
                     pass
 
                 # Save dataframe as CSV file
-                file_name = "reports/" + name + "_" + staff_id + "_" + \
+                file_name = "reports/Q_" + name + "_" + staff_id + "_" + \
                     get_timestamp(format="%Y%m%d") + ".csv"
                 df_record.to_csv(file_name, index=False, encoding="utf-8-sig")
 
-                # Go to previous page
-                web.back()
-
-                # Find input field for staff number
-                staff_id_input = WebDriverWait(web, 10).until(
-                        EC.presence_of_element_located((
-                            By.XPATH,
-                            '//*[@id="ctl00_cphContent_txtEnquiryStaffNo_' +
-                            'txtStaffNo"]')))
-
-                # Clear previous search
-                staff_id_input.clear()
-
-                # Exit trial loop if all qualification records are fetched
+                # Exit trial loop if qualification record is fetched
                 break
 
             except BaseException:
@@ -172,9 +159,6 @@ def fetch_qualification_record(config):
                       "] Failed to fetch qualification record for " +
                       df[df["Staff Number"] == s]["Name"].values[0] +
                       " (Trial #" + str(trial + 1) + ").")
-
-                # Go to original page
-                web.get(config["enquiry_qualification_link"])
 
                 # Exit trial loop if last trial
                 if trial == 2:
@@ -212,9 +196,6 @@ def fetch_practice_record(config, df):
         options.add_argument("--headless=new")
         web = webdriver.Chrome(options=options)
 
-        # Browse webpage
-        web.get(config["enquiry_practice_link"])
-
         print("[" + get_timestamp() + "] Fetching staff practice record...")
 
         # Get staff ID list
@@ -240,6 +221,9 @@ def fetch_practice_record(config, df):
                     # Start trial loop
                     for trial in range(3):
                         try:
+                            # Browse webpage
+                            web.get(config["enquiry_practice_link"])
+
                             # Find "Clear" button
                             clear_button = WebDriverWait(web, 10).until(
                                 EC.presence_of_element_located(
@@ -357,9 +341,6 @@ def fetch_practice_record(config, df):
                                   df[df["Staff ID"] == sid][
                                       "Name"].values[0] +
                                   " (Trial #" + str(trial + 1) + ").")
-
-                            # Go to original page
-                            web.get(config["enquiry_practice_link"])
 
                             # Exit trial loop if last trial
                             if trial == 2:

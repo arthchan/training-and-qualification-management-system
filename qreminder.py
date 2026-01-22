@@ -3,8 +3,8 @@
 
 # Import libraries
 from common import get_timestamp, read_configuration_file
-from record import fetch_practice_record
-from report import analyse_report
+from qrecord import fetch_practice_record
+from qreport import analyse_report
 import win32com.client
 import numpy as np
 import pandas as pd
@@ -15,7 +15,7 @@ import os
 def build_reminder_content(config, mode, df):
     """Process email content for daily reminder."""
     # Load reminder email template
-    with open("template/reminder_" + mode + ".html", "r") as file:
+    with open("template/q_reminder_" + mode + ".html", "r") as file:
         reminder_html = file.read()
 
     # Fetch practice records
@@ -133,9 +133,13 @@ def send_daily_reminder_email(config, display=False, test_date=None):
 
         # Send email copy
         cc_list = []
-        for cc in config["email_cc_id"]:
-            cc_list.append(df_staff.loc[df_staff["Staff Number"] == str(cc),
-                                        "Corporate Email"].item())
+        for cc in config["email_cc"]:
+            cc_list.append(cc)
+
+        if (df_email["Days Remaining"] == 0).any():
+            for cc_exp in config["email_cc_expiry"]:
+                cc_list.append(cc_exp)
+
         mail.CC = "; ".join(cc_list)
 
         # Email subject
@@ -233,9 +237,8 @@ def send_quarterly_reminder_email(
 
         # Send email copy
         cc_list = []
-        for cc in config["email_cc_id"]:
-            cc_list.append(df_staff.loc[df_staff["Staff Number"] == str(cc),
-                                        "Corporate Email"].item())
+        for cc in config["email_cc"]:
+            cc_list.append(cc)
         mail.CC = "; ".join(cc_list)
 
         # Email subject

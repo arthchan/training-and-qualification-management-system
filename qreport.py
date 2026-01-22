@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Process report."""
+"""Process qualification report."""
 
 # Import libraries
 from common import get_timestamp, read_configuration_file
@@ -12,22 +12,31 @@ pd.set_option('mode.chained_assignment', None)
 
 
 # Function for generating report in CSV format
-def generate_report(config):
+def generate_qualification_report(config):
     """Generate report in CSV format."""
     # Initialise dataframe for all data
     df_all = pd.DataFrame([])
 
+    # Read staff list
+    df_staff = pd.read_csv(config["staff_list_path"], dtype="string")
+
     # Read individual reports
-    files = glob.glob("reports/*.csv")
+    files = glob.glob("reports/Q_*.csv")
     for f in files:
+        # Filter away former staff
+        sid = f.split('\\')[1].split("_")[2]
+        if sid not in df_staff["Staff Number"].values:
+            continue
+
+        # Import report as dataframe
         df = pd.read_csv(f)
 
         # Set Note column as string
         df["Note"] = df["Note"].astype(str)
 
         # Insert staff number in dataframe
-        df.insert(0, "Staff ID", f.split('\\')[1].split("_")[1])
-        df.insert(1, "Name", f.split('\\')[1].split("_")[0])
+        df.insert(0, "Staff ID", sid)
+        df.insert(1, "Name", f.split('\\')[1].split("_")[1])
 
         # Mark implied qualification
         for iq in config["implied_qualification"]:
@@ -56,15 +65,15 @@ def generate_report(config):
         df_all = pd.concat([df_all, df], ignore_index=True)
 
     # Export report as CSV file in local folder
-    df_all.to_csv(config["report_path"], index=False, encoding='utf-8-sig')
+    df_all.to_csv(config["q_report_path"], index=False, encoding='utf-8-sig')
 
     # Export report as CSV file to Personal OneDrive
     try:
-        df_all.to_csv(config["report_abs_path"], index=False,
+        df_all.to_csv(config["q_report_abs_path"], index=False,
                       encoding='utf-8-sig')
 
     except BaseException:
-        df_all.to_csv(config["report_abs_path"].split(".csv")[0] + '_' +
+        df_all.to_csv(config["q_report_abs_path"].split(".csv")[0] + '_' +
                       get_timestamp(format="%Y%m%d-%H%M") + ".csv",
                       index=False, encoding='utf-8-sig')
 
@@ -88,7 +97,7 @@ def analyse_report(config, quarter_range=None, test_date=None):
     df_reminder = pd.DataFrame([])
 
     # Read report
-    df = pd.read_csv("temp/Report.csv")
+    df = pd.read_csv("temp/QReport.csv")
 
     # Move due dates to expiry dates
     df["Expiry"] = df["Expiry"].combine_first(
@@ -214,7 +223,7 @@ if __name__ == "__main__":
     config = read_configuration_file()
 
     # Generate report
-    generate_report(config)
+    generate_qualification_report(config)
 
     # Analyse report
-    print(analyse_report(config, quarter_range=None, test_date=None))
+    #print(analyse_report(config, quarter_range=None, test_date=None))

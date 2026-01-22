@@ -84,5 +84,5 @@ if __name__ == '__main__':
     config = read_configuration_file()
 
     # Send alert email
-    send_alert_email(config, "alert_success",
+    send_alert_email(config, "q_alert_success",
                      failed=None, display=True)

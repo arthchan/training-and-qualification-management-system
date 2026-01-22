@@ -2,11 +2,13 @@
 """Running the command line interface console."""
 
 # Import libraries
-from alert import send_alert_email
 from common import get_timestamp, read_configuration_file
-from record import fetch_qualification_record
-from reminder import send_daily_reminder_email, send_quarterly_reminder_email
-from report import generate_report
+from qalert import send_alert_email
+from qrecord import fetch_qualification_record
+from qreminder import send_daily_reminder_email, send_quarterly_reminder_email
+from qreport import generate_qualification_report
+from trecord import fetch_training_record
+from treport import generate_training_report
 import pandas as pd
 import schedule
 import time
@@ -23,13 +25,19 @@ def run_daily_enquiry_routine():
 
     # Send alert email to admin
     if len(failed) == 0:
-        send_alert_email(config, "alert_success")
+        send_alert_email(config, "q_alert_success")
 
     elif len(failed) < len(pd.read_csv(config["staff_list_path"])):
-        send_alert_email(config, "alert_partial_success", failed)
+        send_alert_email(config, "q_alert_partial_success", failed)
 
     else:
-        send_alert_email(config, "alert_failure")
+        send_alert_email(config, "q_alert_failure")
+
+    # Fetch training records
+    fetch_training_record(config)
+
+    # Generate training report
+    generate_training_report(config)
 
 
 # Function for sending daily reminder email
@@ -39,7 +47,7 @@ def run_reminder_routine():
     config = read_configuration_file()
 
     # Generate report
-    generate_report(config)
+    generate_qualification_report(config)
 
     # Send daily reminder email
     send_daily_reminder_email(config)

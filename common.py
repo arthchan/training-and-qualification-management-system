@@ -19,6 +19,16 @@ def get_timestamp(dt=None, format="%d/%m/%Y %H:%M:%S"):
     return dt.strftime(format)
 
 
+# Function to calculate time difference
+def get_time_difference(start_time, end_time):
+    """Get time difference."""
+    # Calculate time difference
+    time_diff = end_time - start_time
+
+    # Return time difference in seconds
+    return time_diff.total_seconds()
+
+
 # Function to print and record error message
 def handle_error_message(error):
     """Handle error message."""
