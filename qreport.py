@@ -21,7 +21,7 @@ def generate_qualification_report(config):
     df_staff = pd.read_csv(config["staff_list_path"], dtype="string")
 
     # Read individual reports
-    files = glob.glob("reports/Q_*.csv")
+    files = glob.glob("temp/Q_*.csv")
     for f in files:
         # Filter away former staff
         sid = f.split('\\')[1].split("_")[2]
@@ -97,7 +97,7 @@ def analyse_report(config, quarter_range=None, test_date=None):
     df_reminder = pd.DataFrame([])
 
     # Read report
-    df = pd.read_csv("temp/QReport.csv")
+    df = pd.read_csv(config["q_report_path"])
 
     # Move due dates to expiry dates
     df["Expiry"] = df["Expiry"].combine_first(
@@ -226,4 +226,4 @@ if __name__ == "__main__":
     generate_qualification_report(config)
 
     # Analyse report
-    #print(analyse_report(config, quarter_range=None, test_date=None))
+    print(analyse_report(config, quarter_range=None, test_date=None))

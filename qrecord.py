@@ -140,13 +140,13 @@ def fetch_qualification_record(config):
 
                 # Remove previous files
                 try:
-                    for previous_file in glob.glob("reports/Q_" + name + '*'):
+                    for previous_file in glob.glob("temp/Q_" + name + '*'):
                         os.remove(previous_file)
                 except BaseException:
                     pass
 
                 # Save dataframe as CSV file
-                file_name = "reports/Q_" + name + "_" + staff_id + "_" + \
+                file_name = "temp/Q_" + name + "_" + staff_id + "_" + \
                     get_timestamp(format="%Y%m%d") + ".csv"
                 df_record.to_csv(file_name, index=False, encoding="utf-8-sig")
 

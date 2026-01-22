@@ -103,13 +103,13 @@ def fetch_training_record(config):
 
             # Remove previous files
             try:
-                for previous_file in glob.glob("reports/T_" + name + "*"):
+                for previous_file in glob.glob("temp/T_" + name + "*"):
                     os.remove(previous_file)
             except BaseException:
                 pass
 
             # Save dataframe as CSV file
-            file_name = "reports/T_" + name + "_" + staff_id + "_" + \
+            file_name = "temp/T_" + name + "_" + staff_id + "_" + \
                 get_timestamp(format="%Y%m%d") + ".csv"
             df_record_s.to_csv(file_name, index=False, encoding="utf_8_sig")
 

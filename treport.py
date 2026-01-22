@@ -17,7 +17,7 @@ def generate_training_report(config):
     df_all = pd.DataFrame([])
 
     # Read individual reports
-    files = glob.glob("reports/T_*.csv")
+    files = glob.glob("temp/T_*.csv")
     for f in files:
         df = pd.read_csv(f)
 
