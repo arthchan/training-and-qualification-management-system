@@ -16,9 +16,17 @@ def generate_training_report(config):
     # Initialise dataframe for all data
     df_all = pd.DataFrame([])
 
+    # Read staff list
+    df_staff = pd.read_csv(config["staff_list_path"], dtype="string")
+
     # Read individual reports
     files = glob.glob("temp/T_*.csv")
     for f in files:
+        # Filter away former staff
+        sid = f.split('\\')[1].split("_")[2]
+        if sid not in df_staff["Staff Number"].values:
+            continue
+
         df = pd.read_csv(f)
 
         # Append data to main dataframe
