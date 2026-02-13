@@ -128,18 +128,42 @@ def send_daily_reminder_email(config, display=False, test_date=None):
         content = content.replace("{{ staff_name }}", staff_email_name)
 
         # Receiver's email
-        mail.To = df_staff.loc[
+        receipient_email = df_staff.loc[
             df_staff["Staff Number"] == str(s), "Corporate Email"].item()
+        mail.To = receipient_email
 
         # Send email copy
         cc_list = []
         for cc in config["email_cc"]:
             cc_list.append(cc)
 
+        # Get team admin list if any qualification is expiring within 30 days
+        if (df_email["Days Remaining"] <= 30).any():
+            g = df_staff.loc[df_staff["Staff Number"] == str(s), "Team"].item()
+            team_admin_list = df_staff.loc[df_staff["Staff Number"].isin(
+                config["team_admin"][g])]["Corporate Email"].tolist()
+
+            # Remove admin email from team admin list
+            if config["email_sender"]["admin_email"] in team_admin_list:
+                team_admin_list.remove(config["email_sender"]["admin_email"])
+
+            # Concatenate CC list with team admin list
+            if receipient_email not in team_admin_list:
+                cc_list = cc_list + team_admin_list
+
+        # Add extra CC if any qualification is expiring today
         if (df_email["Days Remaining"] == 0).any():
             for cc_exp in config["email_cc_expiry"]:
                 cc_list.append(cc_exp)
 
+        # Remove duplicate recipients
+        cc_list = list(set(cc_list))
+
+        # Remove receipient email from CC list if exists
+        if receipient_email in cc_list:
+            cc_list.remove(receipient_email)
+
+        # Set CC
         mail.CC = "; ".join(cc_list)
 
         # Email subject
