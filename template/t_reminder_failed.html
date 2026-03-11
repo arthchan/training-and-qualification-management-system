@@ -1,0 +1,36 @@
+<html>
+	<body>
+		<p style="font-family: Courier New">
+			Dear admin,<br>
+			<br>
+			Please note that {{ staff_name }} <span style="color: red;"><b>failed</b></span> his/her training assessment as shown below.
+		</p>
+		{{ email_table }}<br>
+		<p style="font-family: Courier New">
+			Notes:<br>
+			(1) Please follow up with the staff and/or arrange another
+			training session/re-examination as soon as possible. If you have
+			handled the case, you can ignore this message.<br>
+			<br>
+			<br>
+			Thank you for your attention.<br>
+			<br>
+			<br>
+		</p>
+		<p style="font-family: Courier New">
+			Regards,<br>
+			<br>
+			<b>{{ admin_name }}</b><br>
+			{{ admin_job_title }}<br>
+			{{ admin_org_unit }}<br>
+			{{ admin_business_unit }}<br>
+			{{ admin_company }}<br>
+			<a href="mailto:{{ admin_email }}">{{ admin_email }}</a><br>
+			<br>
+			<img src="cid:logo" width="111" height="42"/>
+			<br>
+			<br>
+			<a href="{{ corp_link }}" style="font-size:10px">{{ corp_link }}</a>
+		</p>
+	</body>
+</html>

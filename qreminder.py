@@ -104,7 +104,8 @@ def send_daily_reminder_email(config, display=False, test_date=None):
                                  test_date=test_date)
 
     if df_reminder.empty:
-        print('[' + get_timestamp() + "] No staff requires reminder email.")
+        print('[' + get_timestamp() +
+              "] No staff requires qualification reminder email.")
         return
 
     # Read staff list
@@ -179,7 +180,7 @@ def send_daily_reminder_email(config, display=False, test_date=None):
 
             # Print confirmation on console
             print('[' + get_timestamp() +
-                  "] Prepared reminder email sending to " +
+                  "] Prepared qualification reminder email sending to " +
                   df_staff.loc[df_staff["Staff Number"] == str(s),
                                "Name"].item() + '.')
 
@@ -188,7 +189,8 @@ def send_daily_reminder_email(config, display=False, test_date=None):
             mail.Send()
 
             # Print confirmation on console
-            print('[' + get_timestamp() + "] Sent reminder email to " +
+            print('[' + get_timestamp() +
+                  "] Sent qualification reminder email to " +
                   df_staff.loc[df_staff["Staff Number"] == str(s),
                                "Name"].item() + '.')
 
@@ -209,6 +211,11 @@ def send_quarterly_reminder_email(
     # Analyse report
     df_reminder = analyse_report(config, quarter_range=quarter_range,
                                  test_date=test_date)
+
+    if df_reminder.empty:
+        print('[' + get_timestamp() +
+              "] No team requires qualification reminder email.")
+        return
 
     # Read staff list
     df_staff = pd.read_csv(config["staff_list_path"], dtype="string")
@@ -278,7 +285,7 @@ def send_quarterly_reminder_email(
 
             # Print confirmation on console
             print('[' + get_timestamp() +
-                  "] Prepared reminder email sending to team admin of team " +
+                  "] Prepared qualification reminder email to team " +
                   g + '.')
 
         # Send email
@@ -287,7 +294,7 @@ def send_quarterly_reminder_email(
 
             # Print confirmation on console
             print('[' + get_timestamp() +
-                  "] Sent reminder email to team admin of team " + g + '.')
+                  "] Sent qualification reminder email to team " + g + '.')
 
 
 if __name__ == "__main__":

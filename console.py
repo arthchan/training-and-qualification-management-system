@@ -7,8 +7,10 @@ from qalert import send_alert_email
 from qrecord import fetch_qualification_record
 from qreminder import send_daily_reminder_email, send_quarterly_reminder_email
 from qreport import generate_qualification_report
+from talert import send_failed_training_alert_email
 from trecord import fetch_training_record
-from treport import generate_training_report
+from treport import generate_training_report, check_failed_training_records
+from treminder import send_training_reminder_email
 import pandas as pd
 import schedule
 import time
@@ -69,6 +71,15 @@ def run_reminder_routine():
                                       str(int(yyyy) + 1) + "-01")
     else:
         pass
+
+    # Send training reminder email
+    send_training_reminder_email(config)
+
+    # Check failed training records
+    df_failed = check_failed_training_records(config)
+
+    # Send failed training alert email
+    send_failed_training_alert_email(config, df_failed)
 
 
 if __name__ == "__main__":

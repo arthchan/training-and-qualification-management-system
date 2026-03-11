@@ -1,0 +1,39 @@
+<html>
+	<body>
+		<p style="font-family: Courier New">
+			Dear {{ staff_name }},<br>
+			<br>
+			Please be reminded to <b>complete your
+			job attachment(s) and/or oral examination within the remaining days</b>.
+		</p>
+		{{ email_table }}<br>
+		<p style="font-family: Courier New">
+			Notes:<br>
+			(1) If you have attained the above qualification(s),
+			please kindly ignore this message.<br>
+			(2) If you are not certain about how to complete your job
+			attachement(s) and/or oral examination, please do not hesitate to
+			contact me.
+			<br>
+			<br>
+			Thank you for your attention.<br>
+			<br>
+			<br>
+		</p>
+		<p style="font-family: Courier New">
+			Regards,<br>
+			<br>
+			<b>{{ admin_name }}</b><br>
+			{{ admin_job_title }}<br>
+			{{ admin_org_unit }}<br>
+			{{ admin_business_unit }}<br>
+			{{ admin_company }}<br>
+			<a href="mailto:{{ admin_email }}">{{ admin_email }}</a><br>
+			<br>
+			<img src="cid:logo" width="111" height="42"/>
+			<br>
+			<br>
+			<a href="{{ corp_link }}" style="font-size:10px">{{ corp_link }}</a>
+		</p>
+	</body>
+</html>
